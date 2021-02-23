@@ -1,8 +1,69 @@
 import Head from "next/head";
-
+import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+export default function Home({ data }) {
+  const { info, results: initialResults = [] } = data;
+  const [results, setResults] = useState(initialResults);
+  const [page, setPage] = useState({
+    ...info,
+    current: process.env.BASE_URL,
+  });
+
+  const { current } = page;
+
+  useEffect(() => {
+    // Check if it's the first render
+    if (current === process.env.BASE_URL) return;
+
+    const request = async () => {
+      const res = await fetch(current);
+      const nextData = await res.json();
+
+      setPage({
+        current,
+        ...nextData.info,
+      });
+
+      // If our request does not have a previous value,
+      // that means it’s the first set of results for the given request,
+      // so we should completely replace our results to start from scratch
+      if (!nextData.info?.prev) {
+        setResults(nextData.results);
+      }
+
+      setResults((prevResults) => {
+        return [...prevResults, ...nextData.results];
+      });
+    };
+
+    request();
+  }, [current]);
+
+  const handleLoadMore = () => {
+    setPage((prev) => {
+      return {
+        ...prev,
+        current: page?.next,
+      };
+    });
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    const { currentTarget = {} } = e;
+    const fields = Array.from(currentTarget?.elements);
+    const fieldQuery = fields.find((field) => field.name === "query");
+
+    const value = fieldQuery.value || "";
+    const endpoint = `https://rickandmortyapi.com/api/character/?name=${value}`;
+
+    setPage({
+      current: endpoint,
+    });
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -21,39 +82,27 @@ export default function Home() {
           <code className={styles.code}>pages/index.js</code>
         </p>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
+        <form onSubmit={handleSearch}>
+          <input name="query" type="search" />
+          <button type="submit">SEARCH</button>
+        </form>
 
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+        <ul className={styles.grid}>
+          {results.map((res) => (
+            <li className={styles.card} key={res.id}>
+              <a href="https://nextjs.org/docs">
+                <img src={res.image} alt={res.name} />
+                <h3>{res.name}</h3>
+              </a>
+            </li>
+          ))}
+        </ul>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <p>
+          <button onClick={handleLoadMore} type="button">
+            LOAD MORE
+          </button>
+        </p>
       </main>
 
       <footer className={styles.footer}>
@@ -68,4 +117,15 @@ export default function Home() {
       </footer>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const res = await fetch(process.env.BASE_URL);
+  const data = await res.json();
+
+  return {
+    props: {
+      data,
+    },
+  };
 }
