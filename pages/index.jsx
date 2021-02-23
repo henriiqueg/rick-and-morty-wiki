@@ -1,5 +1,9 @@
-import Head from "next/head";
 import { useEffect, useState } from "react";
+import { Container, Center } from "@chakra-ui/react";
+
+import Header from "components/Header";
+import Footer from "components/Footer";
+
 import styles from "../styles/Home.module.css";
 
 export default function Home({ data }) {
@@ -65,63 +69,44 @@ export default function Home({ data }) {
   };
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
+    <>
+      <Header />
 
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Container maxW="container.lg" p={7}>
+        <Center d="flex" flexDirection="column">
+          <form onSubmit={handleSearch}>
+            <input name="query" type="search" />
+            <button type="submit">SEARCH</button>
+          </form>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+          <ul className={styles.grid}>
+            {results.map((res) => (
+              <li className={styles.card} key={res.id}>
+                <a href="https://nextjs.org/docs">
+                  <img src={res.image} alt={res.name} />
+                  <h3>{res.name}</h3>
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+          <p>
+            <button onClick={handleLoadMore} type="button">
+              LOAD MORE
+            </button>
+          </p>
+        </Center>
+      </Container>
 
-        <form onSubmit={handleSearch}>
-          <input name="query" type="search" />
-          <button type="submit">SEARCH</button>
-        </form>
-
-        <ul className={styles.grid}>
-          {results.map((res) => (
-            <li className={styles.card} key={res.id}>
-              <a href="https://nextjs.org/docs">
-                <img src={res.image} alt={res.name} />
-                <h3>{res.name}</h3>
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <p>
-          <button onClick={handleLoadMore} type="button">
-            LOAD MORE
-          </button>
-        </p>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+      <Footer />
+    </>
   );
 }
 
 export async function getServerSideProps() {
-  const res = await fetch(process.env.BASE_URL);
-  const data = await res.json();
+  // const res = await fetch(process.env.BASE_URL);
+  // const data = await res.json();
+  const data = [];
 
   return {
     props: {
