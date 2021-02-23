@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Container, Center } from "@chakra-ui/react";
+import { Container, Center, SimpleGrid, Button } from "@chakra-ui/react";
 
 import Header from "components/Header";
+import Filter from "components/Filter";
+import CharacterCard from "components/CharacterCard";
 import Footer from "components/Footer";
-
-import styles from "../styles/Home.module.css";
 
 export default function Home({ data }) {
   const { info, results: initialResults = [] } = data;
@@ -74,27 +74,30 @@ export default function Home({ data }) {
 
       <Container maxW="container.lg" p={7}>
         <Center d="flex" flexDirection="column">
-          <form onSubmit={handleSearch}>
-            <input name="query" type="search" />
-            <button type="submit">SEARCH</button>
-          </form>
+          <Filter onSubmit={handleSearch} />
 
-          <ul className={styles.grid}>
+          <SimpleGrid
+            columns={[1, 1, 2, 3]}
+            spacing={[2, 3, 5]}
+            mt={10}
+            mb={10}
+          >
             {results.map((res) => (
-              <li className={styles.card} key={res.id}>
-                <a href="https://nextjs.org/docs">
-                  <img src={res.image} alt={res.name} />
-                  <h3>{res.name}</h3>
-                </a>
-              </li>
+              <CharacterCard
+                key={res.id}
+                name={res.name}
+                image={res.image}
+                status={res.status}
+                species={res.species}
+                type={res.type}
+                gender={res.gender}
+              />
             ))}
-          </ul>
+          </SimpleGrid>
 
-          <p>
-            <button onClick={handleLoadMore} type="button">
-              LOAD MORE
-            </button>
-          </p>
+          <Button colorScheme="primary" onClick={handleLoadMore}>
+            LOAD MORE
+          </Button>
         </Center>
       </Container>
 
@@ -104,9 +107,8 @@ export default function Home({ data }) {
 }
 
 export async function getServerSideProps() {
-  // const res = await fetch(process.env.BASE_URL);
-  // const data = await res.json();
-  const data = [];
+  const res = await fetch(process.env.BASE_URL);
+  const data = await res.json();
 
   return {
     props: {
