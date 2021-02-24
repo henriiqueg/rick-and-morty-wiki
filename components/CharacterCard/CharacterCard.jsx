@@ -14,10 +14,13 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
-} from "@chakra-ui/react";
+  useColorModeValue,
+} from '@chakra-ui/react';
 
 const CharacterCard = ({ name, image, status, species, type, gender }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const cardBg = useColorModeValue('primary.700', 'gray.700');
 
   return (
     <>
@@ -27,12 +30,18 @@ const CharacterCard = ({ name, image, status, species, type, gender }) => {
           maxH="20"
           borderRadius="xl"
           overflow="hidden"
-          bgColor="gray.700"
+          bg={cardBg}
           onClick={onOpen}
           cursor="pointer"
         >
           <Flex>
-            <Image src={image} alt={`${name} Thumb`} maxW="20" mr="4" />
+            <Image
+              src={image}
+              alt={`${name} Thumb`}
+              fallbackSrc="https://via.placeholder.com/80"
+              maxW="20"
+              mr="4"
+            />
             <Center flex="1" justifyContent="start">
               <Text fontSize="xl" fontWeight="bold">
                 {name}

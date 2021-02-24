@@ -3,7 +3,8 @@ const colors = {
     900: "#62CF26",
     800: "#70F745",
     700: "#CBF77E",
-    200: "#CBF77E",
+    500: "#62CF26", // background button light
+    200: "#CBF77E", // background button dark
   },
   gray: {
     800: '#24282F',
@@ -17,21 +18,38 @@ const fonts = {
 };
 
 const config = {
-  initialColorMode: "dark",
-  useSystemColorMode: true,
+  initialColorMode: "light",
+  useSystemColorMode: false, // change for pill
 }
 
-const global = (props) => ({
-  "html, body": {
-    fontSize: "md",
-    color: props.colorMode === "dark" ? "white" : "gray.800",
-    lineHeight: "tall",
-  },
-});
+const styles = {
+  global: (props) => ({
+    "html, body": {
+      backgroundColor: props.colorMode === "dark" ? "gray.800" : "white",
+    },
+  })
+}
+
+const components = {
+  Button: {
+    baseStyle: {
+      color: 'black',
+    },
+    variants: {
+      "search": {
+        boxShadow: "0 0 10px 4px #00000011",
+        bg: 'primary.700',
+        mt: 1,
+        ml: 3,
+      },
+    }
+  }
+}
 
 export default {
-  global,
+  config,
+  styles,
+  components,
   colors,
-  fonts,
-  config
+  fonts
 };

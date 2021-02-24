@@ -1,6 +1,6 @@
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import customTheme from "styles/customTheme";
-import "../styles/globals.css";
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import customTheme from 'styles/customTheme';
+import '../styles/globals.css';
 
 const theme = extendTheme(customTheme);
 

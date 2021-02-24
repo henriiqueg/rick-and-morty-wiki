@@ -5,12 +5,12 @@ import {
   Flex,
   Input,
   Button,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 const Filter = ({ onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
-      <Flex w={["xs", "xs", "md", "lg"]} maxW="full" alignItems="center">
+      <Flex w={['xs', 'xs', 'md', 'lg']} maxW="full" alignItems="center">
         <FormControl id="query">
           <FormLabel>Search</FormLabel>
           <Input
@@ -20,7 +20,7 @@ const Filter = ({ onSubmit }) => {
           />
           <FormHelperText>Search for any character</FormHelperText>
         </FormControl>
-        <Button colorScheme="primary" type="submit" mt={1} ml={3}>
+        <Button colorScheme="primary" type="submit" variant="search">
           SEARCH
         </Button>
       </Flex>

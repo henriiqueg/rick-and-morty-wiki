@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
-import { Container, Center, SimpleGrid, Button } from "@chakra-ui/react";
+import { useEffect, useState } from 'react';
+import {
+  Container,
+  Center,
+  SimpleGrid,
+  Button,
+  Switch,
+  useColorMode,
+} from '@chakra-ui/react';
 
-import Header from "components/Header";
-import Filter from "components/Filter";
-import CharacterCard from "components/CharacterCard";
-import Footer from "components/Footer";
+import Header from 'components/Header';
+import Filter from 'components/Filter';
+import CharacterCard from 'components/CharacterCard';
+import Footer from 'components/Footer';
 
 export default function Home({ data }) {
+  const { toggleColorMode } = useColorMode();
   const { info, results: initialResults = [] } = data;
   const [results, setResults] = useState(initialResults);
   const [page, setPage] = useState({
@@ -58,9 +66,9 @@ export default function Home({ data }) {
 
     const { currentTarget = {} } = e;
     const fields = Array.from(currentTarget?.elements);
-    const fieldQuery = fields.find((field) => field.name === "query");
+    const fieldQuery = fields.find((field) => field.name === 'query');
 
-    const value = fieldQuery.value || "";
+    const value = fieldQuery.value || '';
     const endpoint = `https://rickandmortyapi.com/api/character/?name=${value}`;
 
     setPage({
@@ -73,6 +81,7 @@ export default function Home({ data }) {
       <Header />
 
       <Container maxW="container.lg" p={7}>
+        <Switch onChange={toggleColorMode} />
         <Center d="flex" flexDirection="column">
           <Filter onSubmit={handleSearch} />
 
